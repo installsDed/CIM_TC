@@ -8,40 +8,62 @@
     <title>Recolección</title>
 </head>
 <body>
-    <div class="titulo">
-        <h1>Seleccione configuración</h1>
-    </div>
-   
-    <div class="opciones" style="font-size: 2.2ch;">
-        <img src="escritorio.png">
-        <h1>Mesa de trabajo</h1>
-        <br>
-        <select id="mesaS">
-            <option selected="selected" value="0">Mesa de trabajo</option>
-            <option value="fresa">Fresadora</option>
-            <option value="torno">Torno</option>
-        </select>  
-    </div>
-    <div class="opciones" style="font-size: 2.2ch;">
-        <img src="cajon.png">
-        <h1>Slot de almacen</h1>
-        <br>
-        <select id="slot">
-            <option selected="selected" value="0">Slot</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-        </select>  
-    </div>
-    <div class="container">
-        <a href="/proceso">
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Recolección materia prima</h2>
+            <nav class="sidebar-nav">
+                <a href="/index" class="nav-link">Inicio</a>
+                <form action="verificacion" method="POST">
+                    <input type="submit" class="nav-link active" value="Nuevo maquinado">
+                </form>
+                <form action="tabla" method="POST">
+                    <input type="submit" class="nav-link" value="Almacén">
+                </form>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <h1 class="page-title">Seleccione Configuración</h1>
+            <div class="config-card">
+                <div class="config-step">
+                    <h2>Seleccione la máquina</h2><img src="escritorio.png">
+                    <p>Elija la máquina donde se maquinara la pieza.</p>
+                    <div class="select-wrapper">
+                        <select id="mesaS">
+                            <option selected="selected" value="0">Mesa de trabajo</option>
+                            <option value="fresa">Fresadora</option>
+                            <option value="torno">Torno</option>
+                        </select>
+                       
 
-        <button class="center-button">Avanzar</button><img class="img" src="proximo.png">
-        </a>
+                    </div>
+                    <div class="config-step">
+                        <br>
+                        <h2>Seleccione slot</h2><img src="cajon.png">
+                    <p>Elija el slot del almacen para tomar la materia prima</p>
+                        <div class="select-wrapper">
+                             <select id="slot">
+                            <option selected="selected" value="0">Slot</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                        </div>
+                       
+                       </div>
+                     <div class="config-footer">
+                    <a href="/proceso">
+                        <button class="action-button">Avanzar</button>
+                    </a>
+                </div>
+                </div>
+            </div>
+        </main>
     </div>
+
+   
     <script>
         var socket = io()
         let dropListM = document.getElementById('mesaS')

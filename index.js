@@ -70,7 +70,17 @@ conexion.connect((error) => {
 
 });
 
-
+io.on('connection', (socket)=>{
+        socket.on("inicio", (msg)=>{
+            tareaI = msg;
+        });
+        socket.on("slot", (msg)=>{
+            tarea1 = msg;
+        });
+        socket.on("inicio", (msg)=>{
+            mesaV = msg; 
+        });
+})
 app.get('/index',(req,res)=>{
     
     
@@ -94,7 +104,7 @@ app.get('/index',(req,res)=>{
         const data = await response.json();
         console.log("Respuesta recibida:", data);
     } catch (e) {
-        console.error("Error al conectar con el master:");
+        console.error("Error al conectar con el master");
     }
 }
 
@@ -211,14 +221,7 @@ app.get('/estados',(req,res)=>{
 })
 app.get('/recoleccion',(req,res)=>{
 
-    io.on('connection', (socket)=>{
-        socket.on("inicio", (msg)=>{
-            tareaI = msg;
-        });
-        socket.on("slot", (msg)=>{
-            tarea1 = msg;
-        });
-    })
+    
 
     res.render('paso1')
 })
@@ -486,9 +489,6 @@ app.get('/proceso/mensajes',(req,res)=>{
         }catch(error){
             console.log(error)
         }
-       
-        
-    
     
 })
 app.post('/calidad',async(req,res)=>{
@@ -524,13 +524,12 @@ app.post('/calidad',async(req,res)=>{
     })
     
 })
+app.get('/carga',(req,res)=>{
+    res.render('carga')
+})
 app.get('/mesa',(req,res)=>{
-                                        //toma de que mesa se va llevar a verificar
-    io.on('connection', (socket)=>{
-        socket.on("inicio", (msg)=>{
-            mesaV = msg; 
-        });
-    })
+                                       
+    
     res.render('paso4',{fresa:fresadora,torno:torn})
 })
 app.get('/proceso-v',(req,res)=>{
@@ -811,13 +810,16 @@ app.get('/resultados',(req,res)=>{
         });
         */
        foto="conejo.jpg"
-       RFID="2"
-       aprueba="aprueba"
+       RFID="##############"
+       aprueba="Falta por aprobar"
        //comentarios para pruebas
         setTimeout(() => {
            res.render('paso3',{f:foto,prueba:aprueba,id:RFID}) 
         }, 1000);
                  //imagenes de verificacion
+})
+app.get('/vista',(req,res)=>{
+    res.render('medicionP1')
 })
 
 server.listen(port, hostname, () => {

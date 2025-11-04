@@ -1,35 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="paso3.css"/>
-    <title>Revisión</title>
-</head>
+
+    
+        
+       
 <body>
-    <div class="container">
-        <h1 class="title">Control de calidad</h1>
-        <div class="image-container">
-            <img src="<%=f%>" class="image">
-        </div>
-        <p class="text-below-image"><%=prueba%></p>
-        <div class="text-boxes">
-            <div class="text-box">ID: <%=id%></div>
+   <title>Control de calidad</title>
+    <link rel="stylesheet" href="paso3.css">
+    
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Control de calidad</h2>
+
+            <nav class="sidebar-nav">
+                <a href="/index" class="nav-link">Inicio</a>
+                <form action="verificacion" method="POST">
+                    <input type="submit" class="nav-link" value="Nuevo maquinado">
+                </form>
+                <form action="tabla" method="POST">
+                    <input type="submit" class="nav-link" value="Almacén">
+                </form>
+            </nav>
+
+           
+        </aside>
+
+        <main class="main-content">
             
-        </div>
-        <div class="text-container">
-            <h2>Resultados de trabajo</h2>
-                    <p>•Aceptados: 0</p>
-                    <p>•Rechzados: 0</p>
-                
-        </div>
-        <div class="boton">
-            <a href="/index">
-                <button class="center-button">
-                    Regresar
-                </button>
-            </a>
-        </div>
+            <h1 class="page-title">Control de calidad</h1>
+
+            <div class="image-container">
+                <img src="<%=f%>" class="robot-img">
+            </div>
+            
+           <p class="text-content">Imagen: <%=prueba%></p>
+        
+            <div class="text-content">RFID: <%=id%></div>
+            
+        
+
+        </main>
     </div>
+
 </body>
-</html>

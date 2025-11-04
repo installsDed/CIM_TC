@@ -4,41 +4,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="paso1.css">
-    <script src = "/socket.io/socket.io.js"></script>
-    <title>Recolección</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Configuración de Verificación</title>
 </head>
 <body>
-    <div class="titulo">
-        <h1>Seleccione configuración</h1>
-    </div>
-   
-    <div class="opciones" style="font-size: 2.2ch;">
-        <img src="escritorio.png">
-        <h1>Pieza para verificar</h1>
-        <br>
-        <select id="mesaS">
-            <option selected="selected" value="0">Pieza</option>
-           <%if(fresa){%> <option value="fresa">Fresadora</option><%}%>
-            <%if(torno){%><option value="torno">Torno</option><%}%>
-        </select>  
-    </div>
-    
-    <div class="container">
-        <a href="/proceso-v">
 
-        <button class="center-button">Avanzar</button><img class="img" src="proximo.png">
-        </a>
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Sistema de Almacenaje</h2>
+
+            <nav class="sidebar-nav">
+                <a href="/index" class="nav-link">Inicio</a>
+                <form action="verificacion" method="POST">
+                    <input type="submit" class="nav-link" value="Nuevo maquinado">
+                </form>
+                <form action="tabla" method="POST">
+                    <input type="submit" class="nav-link" value="Almacén">
+                </form>
+                <form action="calidad" method="POST">
+                    <input type="submit" class="nav-link active" value="Verificación">
+                </form>
+            </nav>
+
+            
+        </aside>
+
+        <main class="main-content">
+            
+            <h1 class="page-title">Seleccione Configuración</h1>
+
+            <div class="config-card">
+
+                <div class="config-step">
+                    <h2>Paso 1: Seleccione la máquina</h2><img src="escritorio.png">
+                    <p>Elija la máquina de la cual desea verificar una pieza.</p>
+                    <div class="select-wrapper">
+                        <select id="mesaS">
+                            <option selected="selected" value="0">Seleccione una máquina...</option>
+                            <%if(fresa){%> <option value="fresa">Fresadora</option><%}%>
+                            <%if(torno){%><option value="torno">Torno</option><%}%>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="config-step" id="step-2-section" style="display: none;">
+                    <h2>Paso 2: Seleccione la pieza</h2>
+
+                    <div class="radio-imagenes" id="seccionRadios" style="display: none;">
+                        <label>
+                            <span class="piece-label">Pieza 1</span>
+                            <input type="radio" name="seleccion" value="op1">
+                            <img src="piezat1.png" alt="Opción 1">
+                        </label>
+                        <label>
+                            <span class="piece-label">Pieza 2</span>
+                            <input type="radio" name="seleccion" value="op2">
+                            <img src="piezat2.png" alt="Opción 2">
+                        </label>
+                        <label>
+                            <span class="piece-label">Pieza 3</span>
+                            <input type="radio" name="seleccion" value="op3">
+                            <img src="piezat3.png" alt="Opción 3">
+                        </label>
+                        <label>
+                            <span class="piece-label">Pieza 4</span>
+                            <input type="radio" name="seleccion" value="op4">
+                            <img src="piezat4.png" alt="Opción 4">
+                        </label>
+                        <label>
+                            <span class="piece-label">Pieza 5</span>
+                            <input type="radio" name="seleccion" value="op5">
+                            <img src="piezat5.png" alt="Opción 5">
+                        </label>
+                    </div>
+                    
+                    <div class="radio-imagenes" id="seccionRadios2" style="display: none;">
+                        <label>
+                            <span class="piece-label">Pieza 1</span>
+                            <input type="radio" name="seleccion" value="op1">
+                            <img src="piezaf1.png" alt="Opción 1">
+                        </label>
+                        <label>
+                            <span class="piece-label">Pieza 2</span>
+                            <input type="radio" name="seleccion" value="op2">
+                            <img src="piezaf2.png" alt="Opción 2">
+                        </label>
+                        <label>
+                            <span class="piece-label">Pieza 3</span>
+                            <input type="radio" name="seleccion" value="op3">
+                            <img src="piezaf3.png" alt="Opción 3">
+                        </label>
+                        <label>
+                            <span class="piece-label">Pieza 4</span>
+                            <input type="radio" name="seleccion" value="op4">
+                            <img src="piezaf4.png" alt="Opción 4">
+                        </label>
+                        <label>
+                            <span class="piece-label">Pieza 5</span>
+                            <input type="radio" name="seleccion" value="op5">
+                            <img src="piezaf5.png" alt="Opción 5">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="config-footer">
+                    <a href="/proceso-v">
+                        <button class="action-button">Avanzar</button>
+                    </a>
+                </div>
+
+            </div> </main>
     </div>
+
     <script>
-        var socket = io()
+        var socket
+        if(socket){
+            console.log("true")
+        }else{
+            socket = io()
+        }
+        
         let dropListM = document.getElementById('mesaS')
-       
+        let seccionRadios = document.getElementById('seccionRadios')
+        let seccionRadios2 = document.getElementById('seccionRadios2')
+        let step2Section = document.getElementById('step-2-section') // <-- Elemento nuevo
         let pS
+        
         dropListM.onchange = (ev)=>{
-                pS = dropListM.value
-                socket.emit("inicio", pS)
+            pS = dropListM.value
+            
+            socket.emit("inicio", pS)
+            
+            if (pS == "torno") {
+                step2Section.style.display = "block"   // <-- Mostrar Paso 2
+                seccionRadios.style.display = "flex" 
+                seccionRadios2.style.display = "none"   
+            } else if(pS == "fresa") {
+                step2Section.style.display = "block"   // <-- Mostrar Paso 2
+                seccionRadios.style.display = "none"
+                seccionRadios2.style.display = "flex" 
+            } else if(pS == 0){
+                step2Section.style.display = "none"    // <-- Ocultar Paso 2
+                seccionRadios2.style.display = "none"
+                seccionRadios.style.display = "none"
             }
-
+        }
     </script>
 </body>
 </html>

@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="estilo.css">
-    <title>Inicio</title>
-</head>
 <body>
+    <title>Inicio</title>
     <script type="text/javascript" src="sweetAlert2.all.min.js"></script>
+    <link rel="stylesheet" href="estilo.css">
     <% if (typeof alert != "undefined"){%>
         <script>
             Swal.fire({
@@ -20,31 +14,42 @@
             })
         </script>
     <% } %> 
-    <div class="container-t">
-        <h1 class="page-title">Sistema de almacenaje de doble cara </h1>
-    </div>
-    <div class="container">
-            <img src="RMA.png" class="img">
-            <form action="verificacion" method="POST">
-                <input type="submit" class="center-button" value="Inicio">
-            </form>
-            <form action="tabla" method="POST">
-                <input type="submit" class="center-button" value="Almacén">
-            </form>
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Sistema de Almacenaje</h2>
+
+            <nav class="sidebar-nav">
+                <a href="" class="nav-link">Inicio</a>
+                <form action="verificacion" method="POST">
+                    <input type="submit" class="nav-link" value="Nuevo maquinado">
+                </form>
+                <form action="tabla" method="POST">
+                    <input type="submit" class="nav-link" value="Almacén">
+                </form>
+            </nav>
+
+            <div class="sidebar-results">
+                <h3>Resultados de trabajo</h3>
+                <a href="/resultados">• Resultados</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <h1 class="page-title"><%= (typeof alert != "undefined") ? alert : "Sistema de almacenaje de doble cara" %></h1>
+
+            <div class="image-container">
+                <img src="RMA.png" class="robot-img">
+            </div>
+            
             <% if(final){%>
             <form action="calidad" method="POST">
-                <input type="submit" class="ver-button" value="Disponible verificación">
+                <input type="submit" class="action-button" value="Disponible verificación">
             </form>
             <% } %>
-        <div class="text-container">
-            <h2>Resultados de trabajo</h2>
-            
-                <a href="/resultados">
-                    <p>•Resultados</p>
-                </a>
-        </div>
-   
+
+        </main>
     </div>
 
 </body>
-</html>

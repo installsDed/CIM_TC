@@ -4,87 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="tabla.css">
-    <title>tabla</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Almacén - Indicadores</title>
 </head>
 <body>
-   
-    <div class="container">
-        <h1>Tabla de Indicadores</h1> 
-        <div class="tablas">
-            <table>
+    
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Sistema de Almacenaje</h2>
+
+            <nav class="sidebar-nav">
+                <a href="/index" class="nav-link">Inicio</a>
+                <form action="verificacion" method="POST">
+                    <input type="submit" class="nav-link" value="Nuevo maquinado">
+                </form>
+                <form action="tabla" method="POST">
+                    <input type="submit" class="nav-link active" value="Almacén">
+                </form>
+            </nav>
+
+            <div class="sidebar-results">
+                <h3>Resultados de trabajo</h3>
+                <a href="/resultados">• Resultados</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
             
-                <tbody>
-                    <tr>
-                        <th>Fresadora Materia prima</th>
-                        <% if(es[0]==1){%> <td class="on">Slot 1</td> <%}else if(es[0]==0){%> <td class="off">Slot 1</td> <%}%>
-                        <% if(es1[0]==1){%> <td class="on">Slot 2</td> <%}else if(es1[0]==0){%> <td class="off">Slot 2</td> <%}%>
-                        <% if(es2[0]==1){%> <td class="on">Slot 3</td> <%}else if(es2[0]==0){%> <td class="off">Slot 3</td> <%}%>
-                        
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <% if(es[1]==1){%> <td class="on">Slot 4</td> <%}else if(es[1]==0){%> <td class="off">Slot 4</td> <%}%>
-                        <% if(es1[1]==1){%> <td class="on">Slot 5</td> <%}else if(es1[1]==0){%> <td class="off">Slot 5</td> <%}%>
-                        <br>
-                        <% if(es2[1]==1){%> <td class="on">Slot 6</td> <%}else if(es2[1]==0){%> <td class="off">Slot 6</td> <%}%>
-                    </tr>
-                    <tr>
-                        <th>Torno Materia prima</th>
-                        <% if(es[2]==1){%> <td class="on">Slot 1</td> <%}else if(es[2]==0){%> <td class="off">Slot 1</td> <%}%>
-                        <% if(es1[2]==1){%> <td class="on">Slot 2</td> <%}else if(es1[2]==0){%> <td class="off">Slot 2</td> <%}%>
-                        <% if(es2[2]==1){%> <td class="on">Slot 3</td> <%}else if(es2[2]==0){%> <td class="off">Slot 3</td> <%}%>
-                        
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <% if(es[3]==1){%> <td class="on">Slot 4</td> <%}else if(es[3]==0){%> <td class="off">Slot 4</td> <%}%>
-                        <% if(es1[3]==1){%> <td class="on">Slot 5</td> <%}else if(es1[3]==0){%> <td class="off">Slot 5</td> <%}%>
-                        <% if(es2[3]==1){%> <td class="on">Slot 6</td> <%}else if(es2[3]==0){%> <td class="off">Slot 6</td> <%}%>
-                    </tr>
-                </tbody>
-            </table>
-            <table>
-                
-                <tbody>
-                    <tr>
-                        <th>Fresadora Producto terminado</th>
-                        <% if(es3[0]==1){%> <td class="on">Slot 1 <br><%=vr[0]%></td> <%}else if(es3[0]==0){%> <td class="off">Slot 1 <br>Indefinido</td> <%}%>
-                        <% if(es4[0]==1){%> <td class="on">Slot 2 <br><%=vr1[0]%></td> <%}else if(es4[0]==0){%> <td class="off">Slot 2 <br>Indefinido</td> <%}%>
-                        <% if(es5[0]==1){%> <td class="on">Slot 3 <br><%=vr2[0]%></td> <%}else if(es5[0]==0){%> <td class="off">Slot 3 <br>Indefinido</td> <%}%>
-                        
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <% if(es3[1]==1){%> <td class="on">Slot 4 <br><%=vr[1]%></td> <%}else if(es3[1]==0){%> <td class="off">Slot 4 <br>Indefinido</td> <%}%>
-                        <% if(es4[1]==1){%> <td class="on">Slot 5 <br><%=vr1[1]%></td> <%}else if(es4[1]==0){%> <td class="off">Slot 5 <br>Indefinido</td> <%}%>
-                        <br>
-                        <% if(es5[1]==1){%> <td class="on">Slot 6 <br><%=vr2[1]%></td> <%}else if(es5[1]==0){%> <td class="off">Slot 6 <br>Indefinido</td> <%}%>
-                    </tr>
-                    <tr>
-                        <th>Torno Producto termiando</th>
-                        <% if(es3[2]==1){%> <td class="on">Slot 1 <br><%=vr[2]%></td> <%}else if(es3[2]==0){%> <td class="off">Slot 1 <br>Indefinido</td> <%}%>
-                        <% if(es4[2]==1){%> <td class="on">Slot 2 <br><%=vr1[2]%></td> <%}else if(es4[2]==0){%> <td class="off">Slot 2 <br>Indefinido</td> <%}%>
-                        <% if(es5[2]==1){%> <td class="on">Slot 3 <br><%=vr2[2]%></td> <%}else if(es5[2]==0){%> <td class="off">Slot 3 <br>Indefinido</td> <%}%>
-                        
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <% if(es3[3]==1){%> <td class="on">Slot 4 <br><%=vr[3]%></td> <%}else if(es3[3]==0){%> <td class="off">Slot 4 <br>Indefinido</td> <%}%>
-                        <% if(es4[3]==1){%> <td class="on">Slot 5 <br><%=vr1[3]%></td> <%}else if(es4[3]==0){%> <td class="off">Slot 5 <br>Indefinido</td> <%}%>
-                        <% if(es5[3]==1){%> <td class="on">Slot 6 <br><%=vr2[3]%></td> <%}else if(es5[3]==0){%> <td class="off">Slot 6 <br>Indefinido</td> <%}%>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
+            <h1 class="page-title">Tabla de Indicadores</h1>
+
+            <div class="tables-wrapper">
+
+                <div class="table-card">
+                    <h2>Materia Prima</h2>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th rowspan="2">Fresadora</th> <% if(es[0]==1){%> <td class="on">Slot 1</td> <%}else if(es[0]==0){%> <td class="off">Slot 1</td> <%}%>
+                                <% if(es1[0]==1){%> <td class="on">Slot 2</td> <%}else if(es1[0]==0){%> <td class="off">Slot 2</td> <%}%>
+                                <% if(es2[0]==1){%> <td class="on">Slot 3</td> <%}else if(es2[0]==0){%> <td class="off">Slot 3</td> <%}%>
+                            </tr>
+                            <tr> <% if(es[1]==1){%> <td class="on">Slot 4</td> <%}else if(es[1]==0){%> <td class="off">Slot 4</td> <%}%>
+                                <% if(es1[1]==1){%> <td class="on">Slot 5</td> <%}else if(es1[1]==0){%> <td class="off">Slot 5</td> <%}%>
+                                <% if(es2[1]==1){%> <td class="on">Slot 6</td> <%}else if(es2[1]==0){%> <td class="off">Slot 6</td> <%}%>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">Torno</th> <% if(es[2]==1){%> <td class="on">Slot 1</td> <%}else if(es[2]==0){%> <td class="off">Slot 1</td> <%}%>
+                                <% if(es1[2]==1){%> <td class="on">Slot 2</td> <%}else if(es1[2]==0){%> <td class="off">Slot 2</td> <%}%>
+                                <% if(es2[2]==1){%> <td class="on">Slot 3</td> <%}else if(es2[2]==0){%> <td class="off">Slot 3</td> <%}%>
+                            </tr>
+                            <tr> <% if(es[3]==1){%> <td class="on">Slot 4</td> <%}else if(es[3]==0){%> <td class="off">Slot 4</td> <%}%>
+                                <% if(es1[3]==1){%> <td class="on">Slot 5</td> <%}else if(es1[3]==0){%> <td class="off">Slot 5</td> <%}%>
+                                <% if(es2[3]==1){%> <td class="on">Slot 6</td> <%}else if(es2[3]==0){%> <td class="off">Slot 6</td> <%}%>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> <div class="table-card">
+                    <h2>Producto Terminado</h2>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th rowspan="2">Fresadora</th>
+                                <% if(es3[0]==1){%> <td class="on">Slot 1 <br><%=vr[0]%></td> <%}else if(es3[0]==0){%> <td class="off">Slot 1 <br>Indefinido</td> <%}%>
+                                <% if(es4[0]==1){%> <td class="on">Slot 2 <br><%=vr1[0]%></td> <%}else if(es4[0]==0){%> <td class="off">Slot 2 <br>Indefinido</td> <%}%>
+                                <% if(es5[0]==1){%> <td class="on">Slot 3 <br><%=vr2[0]%></td> <%}else if(es5[0]==0){%> <td class="off">Slot 3 <br>Indefinido</td> <%}%>
+                            </tr>
+                            <tr>
+                                <% if(es3[1]==1){%> <td class="on">Slot 4 <br><%=vr[1]%></td> <%}else if(es3[1]==0){%> <td class="off">Slot 4 <br>Indefinido</td> <%}%>
+                                <% if(es4[1]==1){%> <td class="on">Slot 5 <br><%=vr1[1]%></td> <%}else if(es4[1]==0){%> <td class="off">Slot 5 <br>Indefinido</td> <%}%>
+                                <% if(es5[1]==1){%> <td class="on">Slot 6 <br><%=vr2[1]%></td> <%}else if(es5[1]==0){%> <td class="off">Slot 6 <br>Indefinido</td> <%}%>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">Torno</th>
+                                <% if(es3[2]==1){%> <td class="on">Slot 1 <br><%=vr[2]%></td> <%}else if(es3[2]==0){%> <td class="off">Slot 1 <br>Indefinido</td> <%}%>
+                                <% if(es4[2]==1){%> <td class="on">Slot 2 <br><%=vr1[2]%></td> <%}else if(es4[2]==0){%> <td class="off">Slot 2 <br>Indefinido</td> <%}%>
+                                <% if(es5[2]==1){%> <td class="on">Slot 3 <br><%=vr2[2]%></td> <%}else if(es5[2]==0){%> <td class="off">Slot 3 <br>Indefinido</td> <%}%>
+                            </tr>
+                            <tr>
+                                <% if(es3[3]==1){%> <td class="on">Slot 4 <br><%=vr[3]%></td> <%}else if(es3[3]==0){%> <td class="off">Slot 4 <br>Indefinido</td> <%}%>
+                                <% if(es4[3]==1){%> <td class="on">Slot 5 <br><%=vr1[3]%></td> <%}else if(es4[3]==0){%> <td class="off">Slot 5 <br>Indefinido</td> <%}%>
+                                <% if(es5[3]==1){%> <td class="on">Slot 6 <br><%=vr2[3]%></td> <%}else if(es5[3]==0){%> <td class="off">Slot 6 <br>Indefinido</td> <%}%>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> </div> <a href="/index" class="back-button">Regresar</a>
+
+        </main>
     </div>
-    <br>
-    <div class="boton">
-        <a href="/index">
-            <button class="center-button">
-                Regresar
-            </button>
-        </a>
-    </div>
+
 </body>
 </html>
