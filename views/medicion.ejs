@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Vista de Medición</title>
+  <link rel="stylesheet" href="/mediciones.css">
+</head>
+<body>
+  
+  <div class="contenedor">
+    <h1>Evaluación de pieza maquinada</h1>
+    <div class="contenedor-contenido">
+    <div class="tabla-container">
+  <input type="hidden" id="piezaId" value="<%= piezaId %>">
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th> <th>Medición (mm)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% 
+      // "medidasEsperadas" es el array de la pieza que pasaste desde el render
+      // Ejemplo: [105, 3, 16, 5...]
+    %>
+    <% medidasEsperadas.forEach((medida, index) => { %>
+      <tr>
+        <%
+          function numeroALetra(n) {
+            let resultado = "";
+            while (n >= 0) {
+              resultado = String.fromCharCode((n % 26) + 65) + resultado;
+              n = Math.floor(n / 26) - 1;
+            }
+            return resultado;
+          }
+          %>
+        <td><%= numeroALetra(index) %></td> 
+        <td>
+            <input type="number" step="0.01" class="dato-medicion" style="color: white;" placeholder="mm">
+        </td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>
+
+<div class="boton-container">
+    <button class="boton-evaluar">Evaluar</button>
+  </div>
+
+<script>
+document.querySelector('.boton-evaluar').addEventListener('click', () => {
+    // 1. Recolectamos todos los inputs en orden
+    const inputs = document.querySelectorAll('.dato-medicion');
+    
+    // 2. Convertimos a un Array de números limpio
+    const medidasUsuario = Array.from(inputs).map(input => parseFloat(input.value) || 0);
+    
+    const piezaId = document.getElementById('piezaId').value;
+
+    // 3. Enviamos al backend con Fetch
+    fetch('/evaluar-pieza', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            id: piezaId, 
+            medidas: medidasUsuario 
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        window.location = '/resultado'
+    });
+});
+</script>
+
+  
+  
+</div>
+<div class="imagen-container">
+      <h2>Pieza maquinada</h2>
+      <img src="/<%= piezaId %>D.png" alt="Pieza maquinada">
+    </div>
+</div>
+    
+  </div>
+</body>
+</html>

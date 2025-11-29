@@ -11,7 +11,7 @@
 body, html {
     height: 100%;
     font-family: 'Montserrat', sans-serif;
-    background-color: #c4ab96; 
+    background-color: #b8b3af; 
 }
 
 
@@ -24,10 +24,10 @@ a{
 }
 
 .sidebar {
-    flex-basis: 260px; 
+    flex-basis: 360px; 
     background-color: #2c353d; 
     color: #ecf0f1;
-    padding: 2rem;
+    padding: 4rem;
     display: flex;
     flex-direction: column; 
     box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
@@ -127,12 +127,12 @@ a{
 
 .action-button {
     padding: 1rem 2.5rem;
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     font-weight: 500;
     cursor: pointer;
     border: none;
     border-radius: 50px; 
-    
+    margin: 2rem;
     background: linear-gradient(45deg, #27ae60, #2ecc71);
     color: white;
     box-shadow: 0 4px 15px rgba(46, 204, 113, 0.4);
@@ -142,4 +142,25 @@ a{
 .action-button:hover {
     transform: translateY(-3px); 
     box-shadow: 0 6px 20px rgba(46, 204, 113, 0.6);
+}
+.action-buttonR {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 50px; 
+    margin: 2rem;
+    background: linear-gradient(45deg, #ae2727, #cc2e2e);
+    color: white;
+    box-shadow: 0 4px 15px rgba(204, 46, 46, 0.4);
+    transition: all 0.3s ease;
+}
+.action-buttonR:hover {
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 20px rgba(204, 46, 46, 0.6);
+}
+.button-container{
+    display: flex;
+    flex-direction: row;
 }

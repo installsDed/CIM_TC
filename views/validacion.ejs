@@ -1,0 +1,50 @@
+<body>
+    <title>Verificación de pieza</title>
+    <script type="text/javascript" src="sweetAlert2.all.min.js"></script>
+    <link rel="stylesheet" href="validacion.css">
+     <script type="text/javascript" src="jquery.min.js"></script>
+     
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Valores resueltos</h2>
+
+            <nav class="sidebar-nav">
+                <h2 class="nav-link">Numero de medidas: <%=nmedidas%></h2>
+                <h2 class="nav-link">Tipo de pieza: <%=pieza%></h2>
+                <h2 class="nav-link">Dificultad: Media</h2>
+                
+            </nav>
+
+            
+        </aside>
+
+        <main class="main-content">
+            
+            <h1 class="page-title">Resultados de trabajo</h1>
+
+            <div class="image-container">
+                <script>
+            $(document).ready(function (){
+                setInterval( function(){
+                    $('.image-container').load('/val');
+
+                }, 1000);
+            })
+            </script>
+            </div>
+            
+            <div class="button-container">
+               <form action="aceptado" method="POST">
+                <input type="submit" class="action-button" value="Aceptado">
+            </form>
+           <form action="rechazado" method="POST">
+                <input type="submit" class="action-buttonR" value="Rechazado">
+            </form> 
+            </div>
+            
+
+        </main>
+    </div>
+
+</body>

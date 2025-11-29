@@ -57,27 +57,27 @@
                     <div class="radio-imagenes" id="seccionRadios" style="display: none;">
                         <label>
                             <span class="piece-label">Pieza 1</span>
-                            <input type="radio" name="seleccion" value="op1">
+                            <input type="radio" name="seleccion" value="piezat1">
                             <img src="piezat1.png" alt="Opción 1">
                         </label>
                         <label>
                             <span class="piece-label">Pieza 2</span>
-                            <input type="radio" name="seleccion" value="op2">
+                            <input type="radio" name="seleccion" value="piezat2">
                             <img src="piezat2.png" alt="Opción 2">
                         </label>
                         <label>
                             <span class="piece-label">Pieza 3</span>
-                            <input type="radio" name="seleccion" value="op3">
+                            <input type="radio" name="seleccion" value="piezat3">
                             <img src="piezat3.png" alt="Opción 3">
                         </label>
                         <label>
                             <span class="piece-label">Pieza 4</span>
-                            <input type="radio" name="seleccion" value="op4">
+                            <input type="radio" name="seleccion" value="piezat4">
                             <img src="piezat4.png" alt="Opción 4">
                         </label>
                         <label>
                             <span class="piece-label">Pieza 5</span>
-                            <input type="radio" name="seleccion" value="op5">
+                            <input type="radio" name="seleccion" value="piezat5">
                             <img src="piezat5.png" alt="Opción 5">
                         </label>
                     </div>
@@ -85,27 +85,27 @@
                     <div class="radio-imagenes" id="seccionRadios2" style="display: none;">
                         <label>
                             <span class="piece-label">Pieza 1</span>
-                            <input type="radio" name="seleccion" value="op1">
+                            <input type="radio" name="seleccion" value="piezaf1">
                             <img src="piezaf1.png" alt="Opción 1">
                         </label>
                         <label>
                             <span class="piece-label">Pieza 2</span>
-                            <input type="radio" name="seleccion" value="op2">
+                            <input type="radio" name="seleccion" value="piezaf2">
                             <img src="piezaf2.png" alt="Opción 2">
                         </label>
                         <label>
                             <span class="piece-label">Pieza 3</span>
-                            <input type="radio" name="seleccion" value="op3">
+                            <input type="radio" name="seleccion" value="piezaf3">
                             <img src="piezaf3.png" alt="Opción 3">
                         </label>
                         <label>
                             <span class="piece-label">Pieza 4</span>
-                            <input type="radio" name="seleccion" value="op4">
+                            <input type="radio" name="seleccion" value="piezaf4">
                             <img src="piezaf4.png" alt="Opción 4">
                         </label>
                         <label>
                             <span class="piece-label">Pieza 5</span>
-                            <input type="radio" name="seleccion" value="op5">
+                            <input type="radio" name="seleccion" value="piezaf5">
                             <img src="piezaf5.png" alt="Opción 5">
                         </label>
                     </div>
@@ -132,26 +132,38 @@
         let seccionRadios = document.getElementById('seccionRadios')
         let seccionRadios2 = document.getElementById('seccionRadios2')
         let step2Section = document.getElementById('step-2-section') // <-- Elemento nuevo
-        let pS
+        let pS, pP
         
         dropListM.onchange = (ev)=>{
             pS = dropListM.value
             
-            socket.emit("inicio", pS)
+            socket.emit("verM", pS)
+            
             
             if (pS == "torno") {
                 step2Section.style.display = "block"   // <-- Mostrar Paso 2
-                seccionRadios.style.display = "flex" 
+                seccionRadios.style.display = "flex"
+                
                 seccionRadios2.style.display = "none"   
             } else if(pS == "fresa") {
                 step2Section.style.display = "block"   // <-- Mostrar Paso 2
                 seccionRadios.style.display = "none"
-                seccionRadios2.style.display = "flex" 
+                seccionRadios2.style.display = "flex"
+                
             } else if(pS == 0){
                 step2Section.style.display = "none"    // <-- Ocultar Paso 2
                 seccionRadios2.style.display = "none"
                 seccionRadios.style.display = "none"
             }
+        }
+        seccionRadios.onchange = (ev)=>{
+            console.log(ev.target.value)
+            pP = ev.target.value
+            socket.emit("verP",pP)
+        }
+        seccionRadios2.onchange = (ev)=>{
+            pP = ev.target.value 
+            socket.emit("verP",pP)
         }
     </script>
 </body>

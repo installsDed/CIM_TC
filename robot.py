@@ -2,7 +2,7 @@ import socket
 import time
 
 tcp_client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-tcp_client_socket.connect(("172.20.208.105", 8001))
+tcp_client_socket.connect(("172.20.208.135", 8001))
 time.sleep(2)
 
 

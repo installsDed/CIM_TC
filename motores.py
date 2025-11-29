@@ -18,27 +18,27 @@ while(True):
     mensaje = input("")
 
     if mensaje == "fresa_e":
-        encender('75','1')
+        encender('51','1')
         
         
     elif mensaje == "fresa_r":
-        encender('75','4')
+        encender('51','2')
        
         
     elif mensaje == "torno_e":
-        encender('76','7')
+        encender('52','1')
         
         
     elif mensaje == "torno_r":
-        encender('76','8')
+        encender('52','4')
         
         
     elif mensaje == "principal_e":
-        encender('77','3')
+        encender('50','3')
         
         
     elif mensaje == "principal_r":
-        encender('77','4')
+        encender('50','4')
         
     elif mensaje == "salir":
         break

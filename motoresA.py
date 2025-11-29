@@ -11,8 +11,8 @@ def apagar(ip,puerto):
     Rjson1 = respuesta.json()
     
 def rfid():
-    url = 'http://172.20.208.77'
-    datos1 = {"code": "request", "cid": 4, "adr": "/iolinkmaster/port[6]/iolinkdevice/pdin/getdata"}
+    url = 'http://172.20.208.50'
+    datos1 = {"code": "request", "cid": 4, "adr": "/iolinkmaster/port[5]/iolinkdevice/pdin/getdata"}
     respuesta = requests.post(url, json = datos1)
     Rjson1 = respuesta.json()
     dato=Rjson1["data"]["value"]
@@ -23,25 +23,25 @@ while(True):
 
     if mensaje == "fresa_e":
         time.sleep(8)
-        apagar('75','1')
+        apagar('51','1')
     elif mensaje == "fresa_r":
         time.sleep(8)
-        apagar('75','4')
+        apagar('51','2')
     elif mensaje == "torno_e":
     
         time.sleep(8)
-        apagar('76','7')
+        apagar('52','1')
     elif mensaje == "torno_r":
         
         time.sleep(8)
-        apagar('76','8')
+        apagar('52','4')
     elif mensaje == "principal_e":
        
         time.sleep(8)
-        apagar('77','3')
+        apagar('50','3')
     elif mensaje == "principal_r":
         time.sleep(8)
-        apagar('77','4')
+        apagar('50','4')
         rfid()
     elif mensaje == "salir":
         break

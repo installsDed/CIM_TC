@@ -11,13 +11,24 @@ import mqtt from 'mqtt';
 import bcryptjs from 'bcryptjs';
 import session from 'express-session';
 import mysql from 'mysql';
-//import { setTimeout } from 'timers';
-//import { setInterval } from 'timers';
+
 var e1=false
 var e2=false
 var eF=false
-var tarea1,tareaI, lista_filtrada, client, mesaV, fresadora,torn,columna,fila,foto,RFID,aprueba,columnaE,filaE,puertoIN
 
+var tarea1,tareaI, lista_filtrada, client, mesaV,mesaVP, fresadora,torn,columna,fila,foto,RFID,aprueba,columnaE,filaE,puertoIN,nMedidas,porcentaje,estadoAR=false
+const piezas = {
+    "piezat1":[105,22,10,41,10,22,22,14],
+    "piezat2":[105,11,11,10,41,10,22,11,14,22],
+    "piezat3":[105,22,10,41,10,16,3,3,22,14,11],
+    "piezat4":[105,3,16,5,5,6,6,11,5,3,22,3,14,4,4,4,5,16,3,11],
+    "piezat5":[105,11,11,10,20.5,20.5,10,16,3,22,14,3,11],
+    "piezaf1":[100,75,25,19,80,40,3.35],
+    "piezaf2":[100,75,50,25,19,15,40,65,80,6.35],
+    "piezaf3":[100,87.5,12.5,19,7,12.5,67.5,80],
+    "piezaf4":[100,57.3,42.7,19,7,22.3,60,80,26.605,73.395,12.7,3.18],
+    "piezaf5":[78,53.65,46.35,16,19,7,17,25,36.35,43.65,65,80,6.35,11.232,9.52,19.52,6.35,11.35]
+}
 var datos=new Array()
 var datos1=new Array()
 var datos2=new Array()
@@ -77,21 +88,45 @@ io.on('connection', (socket)=>{
         socket.on("slot", (msg)=>{
             tarea1 = msg;
         });
-        socket.on("inicio", (msg)=>{
+        socket.on("verM", (msg)=>{
             mesaV = msg; 
+        });
+        socket.on("verP", (msg)=>{
+            mesaVP = msg
         });
 })
 app.get('/index',(req,res)=>{
-    
+    estadoAR=false
     
     async function sendData() {
     try {
-        const response = await fetch('http://172.20.208.75:80', {
+        const response = await fetch('http://172.20.208.51:80', {
             method: 'POST',
             body: JSON.stringify({
                 code: "request",
                 cid: 4,
-                adr: "/iolinkmaster/port[6]/iolinkdevice/pdout/setdata",
+                adr: "/iolinkmaster/port[5]/iolinkdevice/pdout/setdata",
+                data: { newvalue: "01" }
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("Respuesta recibida:", data);
+    } catch (e) {
+        console.error("Error al conectar con el master");
+    }
+    try {
+        const response = await fetch('http://172.20.208.53:80', {
+            method: 'POST',
+            body: JSON.stringify({
+                code: "request",
+                cid: 4,
+                adr: "/iolinkmaster/port[2]/iolinkdevice/pdout/setdata",
                 data: { newvalue: "01" }
             }),
             headers: { 'Content-Type': 'application/json' }
@@ -109,19 +144,9 @@ app.get('/index',(req,res)=>{
 }
 
 sendData();
-/*
-    try{
-            const response2 = fetch('http://172.20.208.76:80',{
-                method: 'post',
-                body: JSON.stringify({"code": "request", "cid": 4, "adr": "/iolinkmaster/port[2]/iolinkdevice/pdout/setdata", "data": {"newvalue": "01"}}),
-                headers: {'Content-Type': 'application/json'}
-            }); 
-        }catch(e){
-            console.error(e)
-            console.log("Error al conectar con el master")
-        }
-            */
-        //--------------------------prender balizas en amarillo comentadas por pruebas---------------
+let temp=piezas.piezat1
+console.log("piezas: "+temp[0]+" longitud: "+temp.length)
+
     lista_filtrada=null
     conexion.query('SELECT estado FROM maquinas',(error, results)=>{
         try{
@@ -172,8 +197,16 @@ app.post('/verificacion', async (req,res)=>{
     }
 })
 
-
-
+app.get('/resultado',(req,res)=>{
+    
+    res.render('validacion',{pieza:lista_filtrada[0],nmedidas:nMedidas,dif:"Alta"})
+})
+app.get('/val',(req,res)=>{
+    res.render('val',{
+        porc:porcentaje,
+        switches:estadoAR
+    })
+})
 app.post('/tabla',async(req,res)=>{
     conexion.query('SELECT A1_C1,A1_C2,A1_C3, A2_C1, A2_C2, A2_C3 FROM almacen',(error,results)=>{
         var result = Object.values(JSON.parse(JSON.stringify(results)))
@@ -242,7 +275,7 @@ app.get('/proceso', (req,res)=>{
             columna='A1_C3'
         }
         if(lista_filtrada[0]=='fresa'&&e1==false){
-            puertoIN='2'
+            puertoIN='3'
             if(lista_filtrada[1]<4){
                 fila=1
             }else if(lista_filtrada[1]>=4){
@@ -361,7 +394,7 @@ app.get('/proceso/mensajes',(req,res)=>{
                 var pyR =new PythonShell('robot.py')
                 pyR.send(columna+'_F'+fila)
                 console.log(columna+'_F'+fila)
-                pyR.on('message',function(message){
+                pyR.on('message',function(message){                 //Manda mensaje a brazo robotico de almacen 
                     pyR.end()
                 })
                 client.publish('1/autonomo','almacen_r')
@@ -370,7 +403,7 @@ app.get('/proceso/mensajes',(req,res)=>{
                         const data=JSON.parse(message)
                         
                         const dataValue = data.data.payload["/iolinkmaster/port["+puertoIN+"]/iolinkdevice/pdin"].data
-                        if (dataValue !== undefined) {
+                        if (dataValue !== undefined) {                      //traduce los mensajes del master para checar si el inductor ya detecto algo
                         //console.log(dataValue); // Debería mostrar "3217"
                         } else {
                         console.log("No se encontró el valor de 'data'");
@@ -379,7 +412,7 @@ app.get('/proceso/mensajes',(req,res)=>{
                             con=1 //enclave 
                             //console.log('if')
                             var py_F = new PythonShell(lista_filtrada[0]+'.py')
-                           
+                           //inicia mensaje a mesa de materia prima
                             py_F.on('message',function(message){
                                 console.log('py')
                                 if(message=='error'){
@@ -533,12 +566,15 @@ app.get('/mesa',(req,res)=>{
     res.render('paso4',{fresa:fresadora,torno:torn})
 })
 app.get('/proceso-v',(req,res)=>{
-    let lista_ruta = [mesaV]
+    let lista_ruta = [mesaV,mesaVP]
+
     lista_filtrada =lista_ruta.filter(element => element !=0&&element!=undefined)
     console.log(lista_ruta)
     console.log(lista_filtrada[0])
-    if(lista_filtrada.length>0){
+    console.log(lista_filtrada[1])
+    if(lista_filtrada.length>1){
         res.render('paso5')
+        //res.redirect('/medir')
     }else{
         res.render('index', {
             alert: true,
@@ -569,7 +605,7 @@ app.get('/proceso/verificacion',(req,res)=>{
         client.subscribe('fresa')
         client.subscribe('torno')
     }
-    client.publish('1/autonomo',lista_filtrada[0]+'_r')    //primer mensaje
+    client.publish('1/autonomo',lista_filtrada[0]+'_r')    //primer mensaje al rma
     function mensaje(topic,message){            
         //console.log(message.toString())
         
@@ -579,7 +615,7 @@ app.get('/proceso/verificacion',(req,res)=>{
             const dataValue = data.data.payload["/iolinkmaster/port[5]/iolinkdevice/pdin"].data
             if(dataValue!='7FE0'&&con==0){
                 con=1
-                const cam_1 = 'C:/Users/ITLinares/Documents/CIM_TC/public/172.20.208.50'
+                const cam_1 = 'C:/Users/almacen/Documents/CIM_TC/public/172.20.208.149'
                 fs2.readdir(cam_1)
                     .then(files => {
                         const unlinkPromises = files.map(file => {
@@ -591,66 +627,77 @@ app.get('/proceso/verificacion',(req,res)=>{
                     console.error(`Something wrong happened removing files of ${cam_1}`)
                 });
                 var pyF = new PythonShell('verificacion.py')
+                pyF.send(lista_filtrada[1])
                 pyF.on('message',function(message){
-                    if(message=='error'){
-                        //rechazado
-                        try{
-                            conexion.query('UPDATE calidad set rechazados=rechazados+1 WHERE 1', async(error, results)=> {
-                                if (error) {
-                                    console.log(error);
-                                }
-                            });
-                            imagen2_R = "Rechazado";
-                            var filePath = "C:/Users/ITLinares/Documents/CIM_TC/public/aprueba.txt";
-                            fs.writeFile(filePath, imagen2_R, (err)=>{
-                                if (err) throw  err;
-                                console.log("Nombre: "+imagen2_R)
-                            })
-                        }catch(error){
-                            console.log(error)
-                        }
-                    }else{
-                        //aprobado --- mesa verificacion
-                        try{
-                            conexion.query('UPDATE calidad set aceptados=aceptados+1 WHERE 1', async(error, results)=> {
-                                if (error) {
-                                    console.log(error);
-                                }
-                            });
-                             imagen2_R = "Aprobado";
-                            var filePath = "C:/Users/ITLinares/Documents/CIM_TC/public/aprueba.txt";
-                            fs.writeFile(filePath, imagen2_R, (err)=>{
-                                if (err) throw  err;
-                                console.log("Nombre: "+imagen2_R)
-                            })
-                        }catch(error){
-                            console.log(error)
-                        }
-                    }
-                    setTimeout(() => {
-                        let files1 = fs.readdirSync("C:/Users/ITLinares/Documents/CIM_TC/public/172.20.208.50")
+                    if(message=='error0'){
+                        res.render('index', {
+                        alert: true,
+                        alertTitle: "Error",
+                        alertMessage: "Error en la imagen que la mesa vio",
+                        alertIcon: "error",
+                        timer: 2500,
+                        ruta: "index",
+                        ip: ip,
+                        state1:e1,
+                        state2:e2,
+                        final:eF 
+                    })
+                    }else if(message=='error1'){
+                        res.render('index', {
+                        alert: true,
+                        alertTitle: "Error",
+                        alertMessage: "Error en la elección",
+                        alertIcon: "error",
+                        timer: 2500,
+                        ruta: "index",
+                        ip: ip,
+                        state1:e1,
+                        state2:e2,
+                        final:eF 
+                    })
+                    }else if(message=='funciono'){
+                        
+                        let files1 = fs.readdirSync("C:/Users/almacen/Documents/CIM_TC/public/172.20.208.149")
                         let jpg1 = files1[0];
                         let img = encodeURIComponent(jpg1)
                         let img2  = decodeURIComponent(img)
-                        imagen2_R = "172.20.208.50/" + img2;
-                        var filePath = "C:/Users/ITLinares/Documents/CIM_TC/public/foto.txt";
+                        imagen2_R = "172.20.208.149/" + img2;
+                        var filePath = "C:/Users/almacen/Documents/CIM_TC/public/foto.txt";
                         fs.writeFile(filePath, imagen2_R, (err)=>{
                             if (err) throw  err;
                             console.log("Nombre: "+imagen2_R)
                         })
-                    }, 1000);
-                    
-                    var M = new PythonShell('motores.py')
-                    M.send('principal_e')
-                    M.on('message',function(message){
-                        client.publish('1/autonomo',message)
-                        M.end()
-                        var MA = new PythonShell('motoresA.py')
-                        MA.send('principal_e')
-                        MA.on('message',function(message){
-                            MA.end()   
-                        })
+                        res.redirect('/medicion')
+                        client.end()
+                    }else if(message=='error'){
+                        res.render('index', {
+                        alert: true,
+                        alertTitle: "Error",
+                        alertMessage: "Error en el rfid",
+                        alertIcon: "error",
+                        timer: 2500,
+                        ruta: "index",
+                        ip: ip,
+                        state1:e1,
+                        state2:e2,
+                        final:eF 
                     })
+                    }else{
+                        res.render('index', {
+                        alert: true,
+                        alertTitle: "Error",
+                        alertMessage: "Error desconocido",
+                        alertIcon: "error",
+                        timer: 2500,
+                        ruta: "index",
+                        ip: ip,
+                        state1:e1,
+                        state2:e2,
+                        final:eF 
+                    })
+                    }
+                    
+                    
                     pyF.end()
                 })
             }else if(dataValue=='7FE0'&&con==1){
@@ -712,7 +759,7 @@ app.get('/proceso/verificacion',(req,res)=>{
                             imagen1_R = message.toString()
                         }
                     
-                    var filePath = "C:/Users/ITLinares/Documents/CIM_TC/public/rfid.txt";
+                    var filePath = "C:/Users/almacen/Documents/CIM_TC/public/rfid.txt";
                     fs.writeFile(filePath, imagen1_R, (err)=>{
                         if (err) throw  err;
                         console.log("Nombre: "+imagen1_R)
@@ -732,13 +779,58 @@ app.get('/proceso/verificacion',(req,res)=>{
                 }catch(error){
                     console.log(error)
                 }
-            }else if(contador==3){
-                //se va de verificacion
-                client.publish('1/autonomo','almacen_e')
+                // Se queda la pantalla de carga hasta esta instrucción
+            }               
+            
+        }
+    }
 
-                contador++
-            }else if(contador==4){
-                //mensaje robot
+    client.on('connect', conectar)
+    client.on('message', mensaje)
+})
+app.post('/aceptado',async(req,res)=>{
+    estadoAR=true
+    let imagen2_R
+    client = mqtt.connect('ws://172.20.208.17:8083/mqtt')
+    let contador=0
+     var M = new PythonShell('motores.py')
+                    M.send('principal_e')
+                    M.on('message',function(message){   //motores para entregar el palet 
+                        client.publish('1/autonomo',message)
+                        M.end()
+                        var MA = new PythonShell('motoresA.py')
+                        MA.send('principal_e')
+                        MA.on('message',function(message){
+                            //aprobado --- mesa verificacion
+                        try{
+                            conexion.query('UPDATE calidad set aceptados=aceptados+1 WHERE 1', async(error, results)=> {
+                                if (error) {
+                                    console.log(error);
+                                }
+                            });
+                             imagen2_R = "Aprobado";
+                            var filePath = "C:/Users/almacen/Documents/CIM_TC/public/aprueba.txt";
+                            fs.writeFile(filePath, imagen2_R, (err)=>{
+                                if (err) throw  err;
+                                console.log("Nombre: "+imagen2_R)
+                            })
+                        }catch(error){
+                            console.log(error)
+                        }
+                            MA.end()   
+                        })
+                    })
+                     
+    function conectar(){
+        client.subscribe('1/autonomo_r')
+        client.subscribe('m_principal')
+    }
+    function mensaje(topic,message){
+        if(message=='listo'){
+            if (contador==0){
+               client.publish('1/autonomo','almacen_e') 
+               contador++
+            }else if(contador==1){
                 var final
                 conexion.query('SELECT A2_C1, A2_C2, A2_C3 FROM almacen',(error,results)=>{
                     var result = Object.values(JSON.parse(JSON.stringify(results)))
@@ -748,6 +840,7 @@ app.get('/proceso/verificacion',(req,res)=>{
                             filaE=i+1
                             console.log(columnaE+"_F"+filaE)
                             final=columnaE+"_F"+filaE
+                            
                             var robot2= new PythonShell('robot2.py')
                             console.log(columnaE+"_F"+filaE)
                             robot2.send(final)
@@ -781,46 +874,128 @@ app.get('/proceso/verificacion',(req,res)=>{
                             break
                         }
                    }
+                   contador++
                 })
-                
-                res.redirect('/index')
-                client.end()
-            }               
+                //actualizar base de datos con la posicion que tiene plaet aceptado rechazado
+            }else if(contador==2){
+                res.render('index', {
+                        alert: true,
+                        alertTitle: "Proceso concluido",
+                        alertMessage: "El proceso termino siendo aceptado",
+                        alertIcon: "error",
+                        timer: 2500,
+                        ruta: "index",
+                        ip: ip,
+                        state1:e1,
+                        state2:e2,
+                        final:eF 
+                    })
+            }
             
         }
     }
-
     client.on('connect', conectar)
     client.on('message', mensaje)
+    
 })
+app.post('/rechazado',async(req,res)=>{
+     estadoAR=true
+})
+app.get('/medir', (req, res) => {
+    let med=lista_filtrada[1]
+    res.redirect('/medicion/'+med)
+});
+app.get('/medicion/:id',(req,res)=>{
+    const id = req.params.id;
+    
+    const dataPieza = piezas[id];
+    nMedidas=dataPieza.length
+    if(!dataPieza) return res.send("Pieza no encontrada");
+    res.render('medicion', { piezaId: id, medidasEsperadas: dataPieza })
+})
+app.post('/evaluar-pieza', (req, res) => {
+    const { id, medidas } = req.body; 
+    const esperado = piezas[id];
 
+    if (!esperado) return res.status(404).json({ error: "Pieza no existe" });
+
+    let sumaPorcentajes = 0;
+    let detalles = [];
+
+    
+    esperado.forEach((valorReal, index) => {
+        const valorUsuario = medidas[index];
+        
+        
+        const diferencia = Math.abs(valorReal - valorUsuario);
+        
+        
+        let precision = 100 - ((diferencia / valorReal) * 100);
+        
+        
+        if (precision < 0) precision = 0;
+
+        sumaPorcentajes += precision;
+
+        detalles.push({
+            posicion: index + 1,
+            esperado: valorReal,
+            recibido: valorUsuario,
+            precision: precision.toFixed(2) + '%'
+        });
+    });
+
+    // Promedio final de la pieza
+    const promedioTotal = sumaPorcentajes / esperado.length;
+    porcentaje=promedioTotal.toFixed(3)+"%"
+    res.json({
+        pieza: id,
+        porcentajeGlobal: promedioTotal.toFixed(2), // Ej: "98.50"
+        mensaje: promedioTotal > 95 ? "Pieza Aprobada" : "Pieza Rechazada (Fuera de tolerancia)",
+        detalles: detalles
+    });
+});
+/*
+app.get('/medir', (req, res) => {
+    let med="piezat2"
+    res.redirect('/medir/'+med)
+});
+app.get('/medir/:id', (req, res) => {
+    const id = req.params.id;
+    
+    const dataPieza = piezas[id];
+    
+    if(!dataPieza) return res.send("Pieza no encontrada");
+
+    // Renderizamos pasando el array real para que el EJS sepa cuántos inputs crear
+    res.render('medicionP', { piezaId: id, medidasEsperadas: dataPieza });
+});
+*/
 app.get('/resultados',(req,res)=>{
-    /*
-    fs.readFile("C:/Users/ITLinares/Documents/CIM_TC/public/foto.txt", function (err, data) {
+    
+    fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/foto.txt", function (err, data) {
         
         foto=data.toString()
         console.log(foto)
-        fs.readFile("C:/Users/ITLinares/Documents/CIM_TC/public/rfid.txt", function(err,data){
+        fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/rfid.txt", function(err,data){
             RFID=data.toString()
-            fs.readFile("C:/Users/ITLinares/Documents/CIM_TC/public/aprueba.txt", function(err,data){
+            fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/aprueba.txt", function(err,data){
                 aprueba=data.toString()
                 
             })
         })  
         });
-        */
-       foto="conejo.jpg"
-       RFID="##############"
-       aprueba="Falta por aprobar"
+        
+       //foto="conejo.jpg"
+       //RFID="##############"
+       //aprueba="Falta por aprobar"
        //comentarios para pruebas
         setTimeout(() => {
            res.render('paso3',{f:foto,prueba:aprueba,id:RFID}) 
         }, 1000);
                  //imagenes de verificacion
 })
-app.get('/vista',(req,res)=>{
-    res.render('medicionP1')
-})
+
 
 server.listen(port, hostname, () => {
     console.log('server runing at', hostname)
