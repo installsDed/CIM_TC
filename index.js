@@ -900,6 +900,112 @@ app.post('/aceptado',async(req,res)=>{
 })
 app.post('/rechazado',async(req,res)=>{
      estadoAR=true
+    let imagen2_R
+    client = mqtt.connect('ws://172.20.208.17:8083/mqtt')
+    let contador=0
+     var M = new PythonShell('motores.py')
+                    M.send('principal_e')
+                    M.on('message',function(message){   //motores para entregar el palet 
+                        client.publish('1/autonomo',message)
+                        M.end()
+                        var MA = new PythonShell('motoresA.py')
+                        MA.send('principal_e')
+                        MA.on('message',function(message){
+                            //aprobado --- mesa verificacion
+                        try{
+                            conexion.query('UPDATE calidad set rechazados=rechazados+1 WHERE 1', async(error, results)=> {
+                                if (error) {
+                                    console.log(error);
+                                }
+                            });
+                             imagen2_R = "Aprobado";
+                            var filePath = "C:/Users/almacen/Documents/CIM_TC/public/aprueba.txt";
+                            fs.writeFile(filePath, imagen2_R, (err)=>{
+                                if (err) throw  err;
+                                console.log("Nombre: "+imagen2_R)
+                            })
+                        }catch(error){
+                            console.log(error)
+                        }
+                            MA.end()   
+                        })
+                    })
+                     
+    function conectar(){
+        client.subscribe('1/autonomo_r')
+        client.subscribe('m_principal')
+    }
+    function mensaje(topic,message){
+        if(message=='listo'){
+            if (contador==0){
+               client.publish('1/autonomo','almacen_e') 
+               contador++
+            }else if(contador==1){
+                var final
+                conexion.query('SELECT A2_C1, A2_C2, A2_C3 FROM almacen',(error,results)=>{
+                    var result = Object.values(JSON.parse(JSON.stringify(results)))
+                   for(let i=0; i<result.length;i++){
+                        if(result[i].A2_C1==0){
+                            columnaE="A2_C1"
+                            filaE=i+1
+                            console.log(columnaE+"_F"+filaE)
+                            final=columnaE+"_F"+filaE
+                            
+                            var robot2= new PythonShell('robot2.py')
+                            console.log(columnaE+"_F"+filaE)
+                            robot2.send(final)
+                            robot2.on('message',function(message){
+                                robot2.end()
+                            })
+                            break
+                        }else if(result[i].A2_C2==0){
+                            columnaE="A2_C2"
+                            filaE=i+1
+                            console.log(columnaE+"_F"+filaE)
+                            final=columnaE+"_F"+filaE
+                            var robot2= new PythonShell('robot2.py')
+                            console.log(columnaE+"_F"+filaE)
+                            robot2.send(final)
+                            robot2.on('message',function(message){
+                                robot2.end()
+                            })
+                            break
+                        }else if(result[i].A2_C3==0){
+                            columnaE="A2_C3"
+                            filaE=i+1
+                            console.log(columnaE+"_F"+filaE)
+                            final=columnaE+"_F"+filaE
+                            var robot2= new PythonShell('robot2.py')
+                            console.log(columnaE+"_F"+filaE)
+                            robot2.send(final)
+                            robot2.on('message',function(message){
+                                robot2.end()
+                            })
+                            break
+                        }
+                   }
+                   contador++
+                })
+                //actualizar base de datos con la posicion que tiene plaet aceptado rechazado
+            }else if(contador==2){
+                res.render('index', {
+                        alert: true,
+                        alertTitle: "Proceso concluido",
+                        alertMessage: "El proceso termino siendo aceptado",
+                        alertIcon: "error",
+                        timer: 2500,
+                        ruta: "index",
+                        ip: ip,
+                        state1:e1,
+                        state2:e2,
+                        final:eF 
+                    })
+            }
+            
+        }
+    }
+    client.on('connect', conectar)
+    client.on('message', mensaje)
 })
 app.get('/medir', (req, res) => {
     let med=lista_filtrada[1]
