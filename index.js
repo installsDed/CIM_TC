@@ -991,7 +991,7 @@ app.post('/rechazado',async(req,res)=>{
                 res.render('index', {
                         alert: true,
                         alertTitle: "Proceso concluido",
-                        alertMessage: "El proceso termino siendo aceptado",
+                        alertMessage: "El proceso termino siendo rechazado",
                         alertIcon: "error",
                         timer: 2500,
                         ruta: "index",
