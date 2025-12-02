@@ -1092,23 +1092,33 @@ app.get('/medir/:id', (req, res) => {
 */
 app.get('/resultados',(req,res)=>{
     
-    fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/foto.txt", function (err, data) {
-        
-        foto=data.toString()
-        console.log(foto)
-        fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/rfid.txt", function(err,data){
-            RFID=data.toString()
-            fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/aprueba.txt", function(err,data){
-                aprueba=data.toString()
+        fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/foto.txt", function (error, data) {
+             try{   
+                foto=data.toString()
+                //console.log(foto)
+                }catch(error){
+                    foto="sinF.png"
+
+                    }
+                    fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/rfid.txt", function(err,data){
+                        try{
+                    RFID=data.toString()
+                        }catch(err){
+                            RFID="Checar sistema de RFID"
+                        }
+                    fs.readFile("C:/Users/almacen/Documents/CIM_TC/public/aprueba.txt", function(err,data){
+                        try{
+                            aprueba=data.toString()
+                        }catch(err){
+                            aprueba="Checar sistema de camaras"
+                        }
+                    })
+                })  
+                });
                 
-            })
-        })  
-        });
-        
-       //foto="conejo.jpg"
-       //RFID="##############"
-       //aprueba="Falta por aprobar"
-       //comentarios para pruebas
+    
+    
+       
         setTimeout(() => {
            res.render('paso3',{f:foto,prueba:aprueba,id:RFID}) 
         }, 1000);
