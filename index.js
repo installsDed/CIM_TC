@@ -876,7 +876,7 @@ app.post('/aceptado',async(req,res)=>{
                    }
                    contador++
                 })
-                conexion.query('UPDATE final set '+columnaE+'=? WHERE fila=?',[0,filaE], async(error, results)=> {
+                conexion.query('UPDATE final set '+columnaE+'=? WHERE fila=?',[1,filaE], async(error, results)=> {
                                 if (error) {
                                     console.log(error);
                                 }
@@ -991,7 +991,7 @@ app.post('/rechazado',async(req,res)=>{
                    }
                    contador++
                 })
-                conexion.query('UPDATE final set '+columnaE+'=? WHERE fila=?',[1,filaE], async(error, results)=> {
+                conexion.query('UPDATE final set '+columnaE+'=? WHERE fila=?',[0,filaE], async(error, results)=> {
                                 if (error) {
                                     console.log(error);
                                 }
