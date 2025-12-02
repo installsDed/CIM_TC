@@ -874,13 +874,15 @@ app.post('/aceptado',async(req,res)=>{
                             break
                         }
                    }
-                   contador++
-                })
+                  
                 conexion.query('UPDATE final set '+columnaE+'=? WHERE fila=?',[1,filaE], async(error, results)=> {
                                 if (error) {
                                     console.log(error);
                                 }
                             });
+                   contador++
+                })
+                
                 //actualizar base de datos con la posicion que tiene plaet aceptado rechazado
             }else if(contador==2){
                 res.render('index', {
@@ -989,13 +991,14 @@ app.post('/rechazado',async(req,res)=>{
                             break
                         }
                    }
-                   contador++
-                })
-                conexion.query('UPDATE final set '+columnaE+'=? WHERE fila=?',[0,filaE], async(error, results)=> {
+                   conexion.query('UPDATE final set '+columnaE+'=? WHERE fila=?',[0,filaE], async(error, results)=> {
                                 if (error) {
                                     console.log(error);
                                 }
                             });
+                   contador++
+                })
+                
                 //actualizar base de datos con la posicion que tiene plaet aceptado rechazado
             }else if(contador==2){
                 res.render('index', {
